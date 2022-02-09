@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tomcat-container
+  labels:
+    app: tomcat-image
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  labels: 
+    app: tomcat-image
+  name: tomcat-image-v2
+  namespace: tomcat-container
+spec: 
+  replicas: 3
+  selector: 
+    matchLabels: 
+      app: tomcat-image
+      version: 2.0.0
+  template: 
+    metadata: 
+      labels: 
+        app: tomcat-image
+        version: 2.0.0
+    spec: 
+      containers: 
+        - image: "docker.io/surendharselvakumar/tomcat-image:1.0.18"
+          name: tomcat-image
+          ports: 
+            - containerPort: 8888
+              protocol: TCP
+          #imagePullSecrets:
+          #    - name: my-secret            
+                
+
+---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+  # annotations:
+  # labels:
+    # app: tomcat-image
+  # name: tomcat-backend-service
+  # namespace: tomcat-container
+# spec:
+  # ports:
+  # - port: 8888 #port accessing in the server
+    # protocol: TCP
+    # targetPort: 8080 #port exposed in docker container
+  # selector:
+    # app: tomcat-image
+  # type: LoadBalancer  #Using LoadBalancer type to test in the dev envi, can be changed to NodePort or ClusterIP and modify the ingress hostname to access the backend-service in the frontend
+# status:
+  # loadBalancer:
+    # ingress:
+    # - hostname: localhost
+    
+---
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+  # name: tomcat-ingress-frontend
+  # namespace: tomcat-container
+  # annotations:
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+# spec:
+  # rules:
+  # - host: tomcat-frontend.com 
+    # http:
+      # paths:
+      # - pathType: Prefix
+        # path: /
+        # backend:
+          # service:
+            # name: tomcat-backend-service
+            # port:
+              # number: 8888
