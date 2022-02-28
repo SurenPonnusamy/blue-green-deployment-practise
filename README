@@ -1,3 +1,4 @@
 In blue-green deployment strategy, the traffic is routed from one deployment to another deployment without affecting the users experience. 
 This has been done here by setting the selectors in the service part and assigning the same service to the deployments that we choose to be live to the customers.
+Later on change the version in services that match the version in the new deployment from 1.0.0 to 2.0.0
 For reference watch this video tutorial of deployment strategies in kubernetes "https://www.youtube.com/watch?v=efiMiaFjtn8&t=1925s"
